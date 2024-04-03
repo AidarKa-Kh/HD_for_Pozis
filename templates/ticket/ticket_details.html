@@ -1,0 +1,157 @@
+{% extends 'users/base.html' %}
+{% block content %}
+    <div class="row">
+        <div class="col-7">
+            <div class="card mx-auto" style="width: 40rem;">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">{{ ticket.title }}</h5>
+                    <p><b>УИН: </b><small>{{ ticket.ticket_number }}</small></p>
+                    <p class="card-text"><b>Описание: </b>{{ ticket.description }}</p>
+
+                    <div class="row">
+                        <div class="col">
+                            <b>Дата публикации: </b><small>{{ ticket.date_created }}</small>
+                        </div>
+                        <div class="col">
+                            {% if ticket.assigned_to %}
+                                <b>Принято кем: </b> <small>{{ ticket.assigned_to.get_full_name }}</small>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col">
+                            {% if ticket.is_resolved %}
+                                <b>Статус заявки: </b><span class="badge bg-success">Решение принято!</span>
+                            {% else %}
+                                {% if ticket.ticket_status == 'Blocked' %}
+                                    <b>Статус заявки: </b><span class="badge bg-danger">Заблокирована</span>
+                                {% elif ticket.ticket_status == 'Active' %}
+                                    <b>Статус заявки: </b><span class="badge bg-warning">В обработке</span>
+                                {% else %}
+                                    <b>Статус заявки: </b><span class="badge bg-danger">Решение не принято!</span>
+                                {% endif %}
+                            {% endif %}
+
+                            {% if ticket.comment %}
+                                <b>Комментарий: </b>{{ ticket.comment }}
+                            {% endif %}
+                        </div>
+                        <div class="col">
+                            {% if ticket.accepted_date %}
+                                <b>Принято:</b> <small>{{ ticket.accepted_date }}</small>
+                            {% endif %}
+                        </div>
+
+                    </div>
+                    <div class="col">
+                        {% if ticket.closed_date %}
+                            <b>Завершена:</b> <small>{{ ticket.closed_date }}</small>
+                        {% endif %}
+                    </div>
+                </div>
+                {% if request.user.is_manager and not ticket.is_pending and ticket.created_by != request.user %}
+                    {% if ticket.ticket_status == 'Sent' %}
+                        <div class="d-grid gap-2 col-6 mx-auto">
+                            <a href="{% url 'accept-ticket' ticket.pk %}" class="btn btn-success" type="button">В
+                                обработку</a>
+                        </div>
+                    {% elif ticket.ticket_status == 'Active' %}
+                        <div class="d-grid gap-2 col-6 mx-auto">
+                            <a href="{% url 'workspace' %}" class="btn btn-success" type="button" data-bs-toggle="modal"
+                               data-bs-target="#exampleModal">Завершить выполнение</a>
+                        </div>
+                    {% endif %}
+                {% endif %}
+                {% if request.user.is_customer and not ticket.is_pending or request.user.is_manager %}
+                    {% if not ticket.is_resolved and not ticket.ticket_status == 'Blocked' and not ticket.ticket_status == 'Active' %}
+                        <div class="d-grid gap-2 col-6 mx-auto">
+                            <br>
+                            <a href="{% url 'update-ticket' ticket.pk %}" class="btn btn-primary" type="button">Редактировать</a>
+                            <br>
+                        </div>
+                    {% endif %}
+                {% endif %}
+                {% if request.user.is_manager and not ticket.is_resolved and ticket.created_by != request.user %}
+                    {% if ticket.ticket_status == 'Blocked' %}
+                        <div class="d-grid gap-2 col-6 mx-auto">
+                            <a href="{% url 'block-ticket' ticket.pk %}" class="btn btn-outline-success" type="button">Разблокировать
+                                заявку</a>
+                        </div>
+                    {% else %}
+                        {% if not ticket.ticket_status == 'Active' %}
+                            <div class="d-grid gap-2 col-6 mx-auto">
+                                <a href="{% url 'block-ticket' ticket.pk %}" class="btn btn-outline-danger"
+                                   type="button">Заблокировать
+                                    заявку</a>
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                {% endif %}
+            </div>
+            <div class="row mt-4">
+                <div class="col">
+                    <div class="card mx-auto" style="width: 40rem;">
+                        <div class="card-body">
+                            <h5 class="card-title mb-3">Медиа файл</h5>
+                            {% if ticket.media %}
+                                <p><b>Название файла: </b>{{ ticket.media.name }}</p>
+                                <p><b>Формат файла: </b>{{ ticket.media.name|slice:"-4:" }}</p>
+                                <div class="text-center mt-3">
+                                    <a href="{{ ticket.media.url }}" class="btn btn-primary" download>Скачать файл</a>
+                                </div>
+                            {% else %}
+                                <p>Нет прикрепленного медиа файла.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="card mx-auto" style="width: 40rem;">
+                <div class="card-body">
+                    <h5 class="card-title mb-3 border-bottom">
+                        {% if ticket.created_by == request.user %}
+                            Мои заявки
+                        {% else %}
+                            Все заявки пользователя <b>{{ ticket.created_by.get_full_name }}</b>
+                        {% endif %}
+                    </h5>
+                    {% for user_ticket in ticket_per_user %}
+                        <p class="card-text"><b>УИН: </b> {{ user_ticket.ticket_number }}</p>
+                        <p class="card-text"><b>Описание: </b>{{ user_ticket.title }}</p>
+                        <div class="col ">
+                            <a class="btn btn-outline-success float-end "
+                               href="{% url 'ticket-details' user_ticket.pk %}"><small>Ознакомиться</small></a>
+                            <br>
+                            <br>
+                            <p class="border-bottom"></p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Завершение выполнения заявки</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Вы хотите принять и завершить заявку?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отменить</button>
+                    <a href="{% url 'close-ticket' ticket.pk %}" class="btn btn-primary">Принять</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

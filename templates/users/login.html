@@ -1,0 +1,45 @@
+{% extends 'users/base.html' %}
+{% load widget_tweaks %}
+{% block content %}
+
+    <section class="background-radial-gradient overflow-hidden">
+        <div class="container px-4 py-5 px-md-5 text-center text-lg-start my-5">
+            <div class="row gx-lg-6 align-items-center mb-5">
+                <div class="col-lg-6 mb-5 mb-lg-0" style="z-index: 10">
+                    <h1 class="my-9 display-9 fw-bold ls-tight" style="color: royalblue ">
+                        Система мониторинга<br/>
+                        <span style="color: darkblue ">производственных вопросов</span>
+                    </h1>
+                </div>
+
+                <div class="col-lg-6 mb-5 mb-lg-0 position-relative">
+                    <div id="radius-shape-1" class="position-absolute rounded-circle shadow-5-strong"></div>
+                    <div id="radius-shape-2" class="position-absolute shadow-5-strong"></div>
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="card">
+                            <div class="card-body px-4 py-5 px-md-5">
+                                <form>
+                                    <h3>Авторизация</h3>
+                                    <div class="form-outline mb-2">
+                                        <input type="login" name="username" id="form3Example3" class="form-control"
+                                               placeholder="Логин" required/>
+                                        <label class="form-label" for="form3Example3"></label>
+                                    </div>
+                                    <div class="form-outline mb-2">
+                                        <input type="password" name="password" id="form3Example4" class="form-control"
+                                               placeholder="Пароль" required/>
+                                        <label class="form-label" for="form3Example4"></label>
+                                    </div>
+                                    <div class="d-grid gap-2 col-6 mx-auto">
+                                        <button class="btn btn-primary">Войти</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock content %}

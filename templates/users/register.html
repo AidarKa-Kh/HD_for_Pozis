@@ -1,0 +1,56 @@
+{% extends 'users/base.html' %}
+{% load widget_tweaks %}
+{% block content %}
+
+    <section class="background-radial-gradient overflow-hidden">
+        <div class="container px-4 py-5 px-md-5 text-center text-lg-start my-5">
+            <div class="row gx-lg-6 align-items-center mb-5">
+                <div class="col-lg-6 mb-5 mb-lg-0" style="z-index: 10">
+                    <h1 class="my-9 display-9 fw-bold ls-tight" style="color: royalblue ">
+                        Система мониторинга<br/>
+                        <span style="color: darkblue ">производственных вопросов</span>
+                    </h1>
+                    {#        <p class="mb-4 opacity-70" style="color: hsl(218, 1001%, 85%)">#}
+                    {#        </p>#}
+                </div>
+
+                <div class="col-lg-6 mb-5 mb-lg-0 position-relative">
+                    <div id="radius-shape-1" class="position-absolute rounded-circle shadow-5-strong"></div>
+                    <div id="radius-shape-2" class="position-absolute shadow-5-strong"></div>
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="card">
+                            <div class="card-body px-4 py-5 px-md-5">
+                                <form>
+                                    <h3>Регистрация пользователя</h3>
+                                    <div class="form-outline mb-2">
+                                        <label class="form-label" for="form2Example3"></label>
+                                        {% render_field form.username class="form-control" placeholder="Логин" %}
+                                    </div>
+                                    <div class="form-outline mb-2">
+                                        <label class="form-label" for="form1Example2"></label>
+                                        {% render_field form.email class="form-control" placeholder="Почта" %}
+                                    </div>
+                                    <div class="form-outline mb-2">
+                                        <label class="form-label" for="form3Example4"></label>
+                                        {% render_field form.password1 class="form-control" placeholder="Пароль" %}
+                                    </div>
+                                    <div class="form-outline mb-2">
+                                        <label class="form-label" for="form4Example5"></label>
+                                        {% render_field form.password2 class="form-control" placeholder="Повторите пароль" %}
+                                    </div>
+                                    <div class="d-grid gap-2 col-6 mx-auto">
+                                        <button class="btn btn-primary">Зарегистрироваться</button>
+                                        <p class="text-center">или</p>
+                                        <a class="btn btn-primary text-center" href="{% url "login" %}">Войти</a>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock content %}

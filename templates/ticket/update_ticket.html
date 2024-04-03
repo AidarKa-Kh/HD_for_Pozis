@@ -1,0 +1,51 @@
+{% extends 'users/base.html' %}
+{% load crispy_forms_filters %}
+{% load crispy_forms_tags %}
+{% load widget_tweaks %}
+
+{% block content %}
+    <div class="row">
+        <h5 class="title mb-3">Отредактировать заявку</h5>
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <!-- Department input -->
+            <div class="form-outline mb-4">
+                <label for="{{ form.department.id_for_label }}">Какому отделу?</label>
+                {% render_field form.department field_only=True class="form-control" %}
+            </div>
+
+            <!-- Title input -->
+            <div class="form-outline mb-4">
+                {% render_field form.title class="form-control" placeholder="Заголовок" %}
+            </div>
+
+            <!-- Description input -->
+            <div class="form-outline mb-4">
+                {% render_field form.description class="form-control" placeholder="Описание" %}
+            </div>
+
+            {% if not request.user.is_customer %}
+                <!-- Comment input (hide for is_customer) -->
+                <div class="input-group mb-3" {% if request.user.is_customer %}style="display: none;"{% endif %}>
+                    {{ form.comment|as_crispy_field }}
+                </div>
+            {% endif %}
+
+            <!-- Media input -->
+            <div class="form-outline mb-4">
+                {% render_field form.media class="form-control" %}
+            </div>
+
+            <!-- Display current media file -->
+            {% if form.instance.media %}
+                <div class="mb-4">
+                    <label for="current-media" class="form-label">Текущий файл:</label>
+                    <a href="{{ form.media.url }}">{{ form.media.name }}</a>
+                </div>
+            {% endif %}
+
+            <!-- Submit button -->
+            <button class="btn btn-primary btn-block mb-4">Обновить</button>
+        </form>
+    </div>
+{% endblock content %}

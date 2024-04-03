@@ -1,0 +1,35 @@
+{% extends 'users/base.html' %}
+{% load widget_tweaks %}
+
+{% block content %}
+    <div class="row">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <!-- Department input -->
+            <div class="form-outline mb-4">
+                <label for="{{ form.department.id_for_label }}">Какому отделу?</label>
+                {% render_field form.department field_only=True class="form-control" %}
+            </div>
+
+
+            <!-- Title input -->
+            <div class="form-outline mb-4">
+                {% render_field form.title class="form-control" placeholder="Заголовок" %}
+            </div>
+
+            <!-- Description input -->
+            <div class="form-outline mb-4">
+                {% render_field form.description class="form-control" placeholder="Описание" %}
+            </div>
+
+            <!-- Media input -->
+            <div class="form-outline mb-4">
+                {% render_field form.media class="form-control" %}
+            </div>
+
+
+            <!-- Submit button -->
+            <button class="btn btn-primary btn-block mb-4">Отправить</button>
+        </form>
+    </div>
+{% endblock content %}

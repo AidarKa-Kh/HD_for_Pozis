@@ -1,0 +1,29 @@
+{% extends 'users/base.html' %}
+
+{% block content %}
+    <h3>Результаты поиска для "{{ query }}"</h3>
+
+    <h4>Заявки</h4>
+    {% if tickets %}
+        <ul>
+            {% for ticket in tickets %}
+                <li><a href="{% url 'ticket-details' ticket.pk %}">{{ ticket.title }}</a></li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Нет результатов для заявок.</p>
+    {% endif %}
+
+    <h4>Инструкции</h4>
+    {% if instructions %}
+        <ul>
+            {% for instruction in instructions %}
+                <li><a href="{% url 'knowledge-base' %}">{{ instruction.title }}</a></li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Нет результатов для инструкций.</p>
+    {% endif %}
+
+
+{% endblock %}
